@@ -1,5 +1,7 @@
-from fastapi import FastAPI, Query
+import os
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from app.schemas import IngestRequest, BuildIndexRequest, ChatRequest, ChatResponse, HealthResponse
 from app.pipeline_runner import build_index as run_build_index
 from app.indexer import FaissIndex
@@ -8,9 +10,10 @@ from app.generator import generate_answer
 
 app = FastAPI()
 
+# CORS setup
 origins = [
-    "https://jiopay-bot-main-1.onrender.com",  # Your frontend
-    "http://localhost:5173"  # Local testing
+    "https://jiopay-bot-main-1.onrender.com",  # frontend URL
+    "http://localhost:5173"  # local dev
 ]
 
 app.add_middleware(
@@ -21,7 +24,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Global loaded index (can support multiple models later)
+# Optional: serve static files if your frontend fetches any
+if os.path.exists("static"):
+    app.mount("/static", StaticFiles(directory="static"), name="static")
+
+# Global loaded index
 loaded_index = None
 
 @app.get("/health", response_model=HealthResponse)
@@ -32,10 +39,8 @@ async def health():
 async def ingest(req: IngestRequest):
     return {"urls": req.urls, "pipeline": req.pipeline}
 
-
 @app.post("/build_index")
 async def build_index(req: BuildIndexRequest):
-    # Check if index already exists before building
     import os
     from app.config import config
     index_path = os.path.join(config.FAISS_DIR, f"{req.embed_model}_{req.chunker}.index")
@@ -63,3 +68,10 @@ async def chat(req: ChatRequest):
     answer = generate_answer(req.query, retrieved)
     citations = [{"url": ch["url"], "snippet": ch["text"][:120]} for ch, _ in retrieved]
     return {"answer": answer, "citations": citations}
+
+
+# --- Run server on Render's assigned PORT ---
+if __name__ == "__main__":
+    import uvicorn
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run("app.main:app", host="0.0.0.0", port=port)
