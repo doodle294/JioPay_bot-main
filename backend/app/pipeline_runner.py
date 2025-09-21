@@ -20,7 +20,14 @@ SCRAPERS = {
     "selenium": selenium_scraper.fetch_page
 }
 
+
 def build_index(urls, pipeline="trafilatura", chunker="fixed", embed_model="openai"):
+    index_path = os.path.join(config.FAISS_DIR, f"{embed_model}_{chunker}.index")
+    meta_path = index_path + ".meta.json"
+    # If both index and meta exist, skip rebuilding
+    if os.path.exists(index_path) and os.path.exists(meta_path):
+        return index_path
+
     scraper = SCRAPERS[pipeline]
     chunk_func = CHUNKERS[chunker]
 
@@ -41,11 +48,9 @@ def build_index(urls, pipeline="trafilatura", chunker="fixed", embed_model="open
     if not embeddings:
         raise ValueError("No embeddings generated. Check your chunker and embed model.")
     dim = len(embeddings[0])
-    index_path = os.path.join(config.FAISS_DIR, f"{embed_model}_{chunker}.index")
 
     faiss_index = FaissIndex(dim, index_path)
     faiss_index.add(embeddings, metadata)
     faiss_index.save()
     return index_path
 
-    

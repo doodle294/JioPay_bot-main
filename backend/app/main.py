@@ -27,9 +27,16 @@ async def health():
 async def ingest(req: IngestRequest):
     return {"urls": req.urls, "pipeline": req.pipeline}
 
+
 @app.post("/build_index")
 async def build_index(req: BuildIndexRequest):
-    # Access req.embed_model, req.chunker, req.urls here
+    # Check if index already exists before building
+    import os
+    from app.config import config
+    index_path = os.path.join(config.FAISS_DIR, f"{req.embed_model}_{req.chunker}.index")
+    meta_path = index_path + ".meta.json"
+    if os.path.exists(index_path) and os.path.exists(meta_path):
+        return {"message": "Index already exists, using cached index.", "path": index_path}
     path = run_build_index(req.urls, pipeline=req.pipeline, chunker=req.chunker, embed_model=req.embed_model)
     return {"message": "Index built", "path": path}
 

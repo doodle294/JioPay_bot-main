@@ -1,4 +1,4 @@
-export const API_BASE = "https://jiopay-bot-main.onrender.com";
+export const API_BASE = "http://localhost:8000";
 
 // Endpoints
 export const ENDPOINTS = {
