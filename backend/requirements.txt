@@ -10,3 +10,4 @@ pydantic
 python-dotenv
 httpx
 openai
+selenium
