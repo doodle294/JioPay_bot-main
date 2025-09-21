@@ -8,9 +8,14 @@ from app.generator import generate_answer
 
 app = FastAPI()
 
+origins = [
+    "https://jiopay-bot-main-1.onrender.com",  # Your frontend
+    "http://localhost:5173"  # Local testing
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Or specify your frontend URL
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
