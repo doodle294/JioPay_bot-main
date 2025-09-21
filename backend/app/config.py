@@ -12,5 +12,7 @@ class Config:
         self.DEFAULT_PIPELINE = os.getenv("DEFAULT_PIPELINE", "trafilatura")
         self.DEFAULT_CHUNKER = os.getenv("DEFAULT_CHUNKER", "fixed")
         self.DEFAULT_EMBED_MODEL = os.getenv("DEFAULT_EMBED_MODEL", "openai")
+        self.HF_API_KEY = os.getenv("HF_API_KEY", "")
+        
 
 config = Config()
