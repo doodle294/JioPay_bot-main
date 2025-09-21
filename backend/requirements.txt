@@ -1,0 +1,12 @@
+fastapi
+uvicorn
+requests
+beautifulsoup4
+trafilatura
+tiktoken
+sentence-transformers
+faiss-cpu
+pydantic
+python-dotenv
+httpx
+openai
