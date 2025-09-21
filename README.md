@@ -63,20 +63,20 @@ User ──> React Frontend ──> FastAPI Backend ──> Indexing/Retrieval/L
 	- Create a `.env` file in `backend/` with:
 	  ```
 	  DATA_DIR=./data
-FAISS_DIR=./faiss_index
+      FAISS_DIR=./faiss_index
 
-# API Keys (keep secret!)
-OPENAI_API_KEY=
-GEMINI_API_KEY=
-HF_API_KEY=
+      # API Keys (keep secret!)
+      OPENAI_API_KEY=
+      GEMINI_API_KEY=
+      HF_API_KEY=
 
-# Default Pipeline/Model Configs
-DEFAULT_PIPELINE=trafilatura
-DEFAULT_CHUNKER=fixed
-DEFAULT_EMBED_MODEL=openai
+      # Default Pipeline/Model Configs
+      DEFAULT_PIPELINE=trafilatura
+      DEFAULT_CHUNKER=fixed
+      DEFAULT_EMBED_MODEL=openai
 
-# Optional: Logging or Debug Flags
-DEBUG=true
+      # Optional: Logging or Debug Flags
+      DEBUG=true
 	  ```
 
 3. **Run the backend server:**
